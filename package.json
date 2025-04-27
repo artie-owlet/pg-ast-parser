@@ -1,5 +1,5 @@
 {
-  "name": "@artie-owlet/node-app-template",
+  "name": "@artie-owlet/pg-ast-parser",
   "version": "0.0.1-dev.0",
   "description": "",
   "main": "dist/index.js",
@@ -17,6 +17,8 @@
     "doc": "typedoc",
     "lint": "eslint src/",
     "lint-fix": "eslint --fix src/",
+    "lint-tests": "eslint test/",
+    "lint-tests-fix": "eslint --fix test/",
     "postinstall": "husky",
     "postpack": "pinst --enable",
     "prepack": "pinst --disable",
@@ -31,10 +33,14 @@
     "@commitlint/config-conventional": "^19.8.0",
     "@eslint/js": "^9.25.0",
     "@stylistic/eslint-plugin": "^4.2.0",
+    "@types/chai": "^5.2.1",
     "@types/mocha": "^10.0.10",
+    "@types/moo": "^0.5.10",
+    "@types/nearley": "^2.11.5",
     "@types/node": "^22.14.1",
     "@typescript-eslint/types": "^8.30.1",
     "c8": "^10.1.3",
+    "chai": "^5.2.0",
     "eslint": "^9.25.0",
     "eslint-plugin-perfectionist": "^4.11.0",
     "husky": "^9.1.7",
@@ -44,5 +50,9 @@
     "typedoc": "^0.28.2",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.30.1"
+  },
+  "dependencies": {
+    "moo": "^0.5.2",
+    "nearley": "^2.20.1"
   }
 }

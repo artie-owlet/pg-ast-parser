@@ -55,6 +55,12 @@ export default tseslint.config(
                     argsIgnorePattern: '^_',
                 },
             ],
+            '@typescript-eslint/restrict-plus-operands': [
+                'error',
+                {
+                    allowNumberAndString: true,
+                },
+            ],
             '@typescript-eslint/restrict-template-expressions': [
                 'error',
                 {
@@ -88,6 +94,14 @@ export default tseslint.config(
             ],
             '@stylistic/multiline-comment-style': 'off',
             '@stylistic/multiline-ternary': ['error', 'always-multiline'],
+            '@stylistic/no-extra-parens': [
+                'error',
+                'all',
+                {
+                    conditionalAssign: false,
+                    enforceForArrowConditionals: false,
+                },
+            ],
             '@stylistic/object-curly-spacing': ['error', 'always'],
             '@stylistic/object-property-newline': [
                 'error',
@@ -123,6 +137,7 @@ export default tseslint.config(
                 },
             ],
 
+            curly: ['error', 'all'],
             'no-console': 'error',
             'no-duplicate-imports': 'error',
         },
