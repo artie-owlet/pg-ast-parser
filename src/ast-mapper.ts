@@ -209,7 +209,7 @@ function withAccepts(val: a.Statement | nil): val is a.WithStatementBinding {
  */
 export class AstDefaultMapper implements IAstMapper {
     public wrapped?: IAstPartialMapper;
-    private skipNext?: boolean;
+    public skipNext?: boolean;
 
     public super() {
         return new SkipModifier(this);
@@ -1038,7 +1038,7 @@ export class AstDefaultMapper implements IAstMapper {
         });
     }
 
-    join(join: a.JoinClause): a.JoinClause | nil {
+    public join(join: a.JoinClause): a.JoinClause | nil {
         const on = join.on && this.expr(join.on);
         if (!on && !join.using) {
             return join;
@@ -1048,7 +1048,7 @@ export class AstDefaultMapper implements IAstMapper {
         });
     }
 
-    fromTable(from: a.FromTable): a.From | nil {
+    public fromTable(from: a.FromTable): a.From | nil {
         const nfrom = this.tableRef(from.name);
         if (!nfrom) {
             return null; // nothing to select from
@@ -1060,8 +1060,7 @@ export class AstDefaultMapper implements IAstMapper {
         });
     }
 
-
-    selectionColumn(val: a.SelectedColumn): a.SelectedColumn | nil {
+    public selectionColumn(val: a.SelectedColumn): a.SelectedColumn | nil {
         const expr = this.expr(val.expr);
         if (!expr) {
             return null; // not selected anymore
@@ -1075,7 +1074,7 @@ export class AstDefaultMapper implements IAstMapper {
     // ============== EXPRESSIONS ==============
     // =========================================
 
-    expr(val: a.Expr | nil): a.Expr | nil {
+    public expr(val: a.Expr | nil): a.Expr | nil {
         if (!val) {
             return val;
         }
@@ -1135,8 +1134,7 @@ export class AstDefaultMapper implements IAstMapper {
         }
     }
 
-
-    arraySelect(val: a.ExprArrayFromSelect) {
+    public arraySelect(val: a.ExprArrayFromSelect) {
         const select = this.select(val.select);
         if (!select) {
             return null;
@@ -1144,7 +1142,7 @@ export class AstDefaultMapper implements IAstMapper {
         return assignChanged(val, { select });
     }
 
-    extract(st: a.ExprExtract): a.Expr | nil {
+    public extract(st: a.ExprExtract): a.Expr | nil {
         const from = this.expr(st.from);
         if (!from) {
             return null;
@@ -1152,11 +1150,11 @@ export class AstDefaultMapper implements IAstMapper {
         return assignChanged(st, { from });
     }
 
-    valueKeyword(val: a.ExprValueKeyword): a.Expr | nil {
+    public valueKeyword(val: a.ExprValueKeyword): a.Expr | nil {
         return val;
     }
 
-    ternary(val: a.ExprTernary): a.Expr | nil {
+    public ternary(val: a.ExprTernary): a.Expr | nil {
         const value = this.expr(val.value);
         const lo = this.expr(val.lo);
         const hi = this.expr(val.hi);
@@ -1170,11 +1168,11 @@ export class AstDefaultMapper implements IAstMapper {
         });
     }
 
-    parameter(st: a.ExprParameter): a.Expr | nil {
+    public parameter(st: a.ExprParameter): a.Expr | nil {
         return st;
     }
 
-    arrayIndex(val: a.ExprArrayIndex): a.Expr | nil {
+    public arrayIndex(val: a.ExprArrayIndex): a.Expr | nil {
         const array = this.expr(val.array);
         const index = this.expr(val.index);
         if (!array || !index) {
@@ -1186,7 +1184,7 @@ export class AstDefaultMapper implements IAstMapper {
         });
     }
 
-    member(val: a.ExprMember): a.Expr | nil {
+    public member(val: a.ExprMember): a.Expr | nil {
         const operand = this.expr(val.operand);
         if (!operand) {
             return null;
@@ -1196,7 +1194,7 @@ export class AstDefaultMapper implements IAstMapper {
         });
     }
 
-    case(val: a.ExprCase): a.Expr | nil {
+    public case(val: a.ExprCase): a.Expr | nil {
         const value = val.value && this.expr(val.value);
         const whens = arrayNilMap(val.whens, (w) => {
             const when = this.expr(w.when);
@@ -1221,7 +1219,7 @@ export class AstDefaultMapper implements IAstMapper {
         });
     }
 
-    cast(val: a.ExprCast): a.Expr | nil {
+    public cast(val: a.ExprCast): a.Expr | nil {
         const operand = this.expr(val.operand);
         if (!operand) {
             return null;
@@ -1231,7 +1229,7 @@ export class AstDefaultMapper implements IAstMapper {
         });
     }
 
-    call(val: a.ExprCall): a.Expr | nil {
+    public call(val: a.ExprCall): a.Expr | nil {
         const args = arrayNilMap(val.args, (a) => this.expr(a));
         if (!args) {
             return null;
@@ -1248,14 +1246,15 @@ export class AstDefaultMapper implements IAstMapper {
         });
     }
 
-    callSubstring(val: a.ExprSubstring): a.Expr | nil {
+    public callSubstring(val: a.ExprSubstring): a.Expr | nil {
         return assignChanged(val, {
             value: this.expr(val.value),
             from: this.expr(val.from),
             for: this.expr(val.for),
         });
     }
-    callOverlay(val: a.ExprOverlay): a.Expr | nil {
+
+    public callOverlay(val: a.ExprOverlay): a.Expr | nil {
         return assignChanged(val, {
             value: this.expr(val.value),
             placing: this.expr(val.placing),
@@ -1264,7 +1263,7 @@ export class AstDefaultMapper implements IAstMapper {
         });
     }
 
-    array(val: a.ExprList): a.Expr | nil {
+    public array(val: a.ExprList): a.Expr | nil {
         const expressions = arrayNilMap(val.expressions, (a) => this.expr(a));
         if (!expressions) {
             return null;
@@ -1274,20 +1273,20 @@ export class AstDefaultMapper implements IAstMapper {
         });
     }
 
-    constant(value: a.ExprLiteral): a.Expr | nil {
+    public constant(value: a.ExprLiteral): a.Expr | nil {
         return value;
     }
 
-    default(value: a.ExprDefault): a.Expr | nil {
+    public default(value: a.ExprDefault): a.Expr | nil {
         return value;
     }
 
     /** Called when a reference is used */
-    ref(val: a.ExprRef): a.Expr | nil {
+    public ref(val: a.ExprRef): a.Expr | nil {
         return val;
     }
 
-    unary(val: a.ExprUnary): a.Expr | nil {
+    public unary(val: a.ExprUnary): a.Expr | nil {
         const operand = this.expr(val.operand);
         if (!operand) {
             return null;
@@ -1297,7 +1296,7 @@ export class AstDefaultMapper implements IAstMapper {
         });
     }
 
-    binary(val: a.ExprBinary): a.Expr | nil {
+    public binary(val: a.ExprBinary): a.Expr | nil {
         const left = this.expr(val.left);
         const right = this.expr(val.right);
         if (!left || !right) {
@@ -1311,21 +1310,21 @@ export class AstDefaultMapper implements IAstMapper {
 }
 
 // ====== auto implement the replace mechanism
-const proto = AstDefaultMapper.prototype as any;
-for (const k of Object.getOwnPropertyNames(proto)) {
-    const orig = proto[k] as Function;
-    if (k === 'constructor' || k === 'super' || typeof orig !== 'function') {
+const proto = AstDefaultMapper.prototype;
+for (const k of <(keyof AstDefaultMapper)[]>Object.getOwnPropertyNames(proto)) {
+    const orig = proto[k];
+    if (<string>k === 'constructor' || k === 'super' || typeof orig !== 'function') {
         continue;
     }
     Object.defineProperty(proto, k, {
         configurable: false,
         get() {
-            return function(this: AstDefaultMapper, ...args: []) {
+            return function(this: AstDefaultMapper, ...args: unknown[]) {
                 if (this.skipNext) {
                     this.skipNext = false;
                     return orig.apply(this, args);
                 }
-                const impl = (this.wrapped as any)?.[k];
+                const impl = this.wrapped?.[k];
                 if (!impl) {
                     return orig.apply(this, args);
                 }
@@ -1338,7 +1337,9 @@ for (const k of Object.getOwnPropertyNames(proto)) {
 
 // ====== auto implement the skip mechanism
 class SkipModifier extends AstDefaultMapper {
-    constructor(readonly parent: AstDefaultMapper) {
+    public constructor(
+        public readonly parent: AstDefaultMapper,
+    ) {
         super();
     }
 }
